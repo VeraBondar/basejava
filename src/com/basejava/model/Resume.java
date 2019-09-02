@@ -20,6 +20,21 @@ public class Resume {
     public Resume() {
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Resume)) return false;
+
+        Resume resume = (Resume) o;
+
+        return getUuid().equals(resume.getUuid());
+    }
+
+    @Override
+    public int hashCode() {
+        return getUuid().hashCode();
+    }
+
     public String getUuid() {
         return uuid;
     }
