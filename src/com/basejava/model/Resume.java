@@ -1,12 +1,14 @@
 package com.basejava.model;
 
+import java.util.UUID;
+
 /**
  * Initial resume class
  */
-public class Resume {
+public class Resume implements Comparable<Resume> {
 
     // Unique identifier
-    private String uuid;
+    private final String uuid;
 
     @Override
     public String toString() {
@@ -14,10 +16,11 @@ public class Resume {
     }
 
     public Resume(String uuid) {
-        this.setUuid(uuid);
+        this.uuid = uuid;
     }
 
     public Resume() {
+        this(UUID.randomUUID().toString());
     }
 
     @Override
@@ -39,7 +42,8 @@ public class Resume {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    @Override
+    public int compareTo(Resume o) {
+        return uuid.compareTo(o.uuid);
     }
 }

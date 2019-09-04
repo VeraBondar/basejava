@@ -1,19 +1,21 @@
 package com.basejava.storage;
 
+import com.basejava.exception.ExistsStorageException;
+import com.basejava.exception.NotExistsStorageException;
+import com.basejava.exception.StorageException;
 import com.basejava.model.Resume;
 
 import java.util.Arrays;
 
 public abstract class AbstractArrayStorage {
-    private final int storagelimit = 10000;
+    protected static final int storagelimit = 10000;
     protected static int size;
     protected Resume[] storage = new Resume[storagelimit];
 
     public Resume get(String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
-            System.out.println("Resume " + uuid + " not exist");
-            return null;
+            throw new NotExistsStorageException(uuid);
         }
         return storage[index];
     }
@@ -26,8 +28,7 @@ public abstract class AbstractArrayStorage {
     public void update(Resume resume) {
         int number = getIndex(resume.getUuid());
         if (number < 0) {
-            System.out.println("com.basejava.model.Resume is not found");
-            return;
+            throw new NotExistsStorageException(resume.getUuid());
         }
         storage[number] = resume;
     }
@@ -44,18 +45,22 @@ public abstract class AbstractArrayStorage {
 
     public void save(Resume resume) {
         if (size == storage.length) {
-            System.out.println("The storage is completely filled");
+            new StorageException("The storage is completely filled", resume.getUuid());
             return;
         }
         int index = getIndex(resume.getUuid());
-        if (index > 0) return;
+        if (index >= 0) {
+            throw new ExistsStorageException(resume.getUuid());
+        }
         insertElement(resume, index);
         size++;
     }
 
     public void delete(String uuid) {
         int index = getIndex(uuid);
-        if (index < 0) return;
+        if (index < 0) {
+            throw new NotExistsStorageException(uuid);
+        }
         fillDeletedElement(index);
         storage[size - 1] = null;
         size--;
